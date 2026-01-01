@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фитнес-журнал</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-dumbbell"></i> Фитнес-журнал</h1>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span id="username"></span>
+                <button onclick="logout()" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
+            </div>
+            <div class="auth-buttons" id="authButtons">
+                <button onclick="showLogin()" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <button onclick="showRegister()" class="btn btn-secondary">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Аутентификация -->
+            <div id="authSection" class="auth-section" style="display: none;">
+                <div class="auth-form" id="loginForm" style="display: none;">
+                    <h2><i class="fas fa-sign-in-alt"></i> Вход в систему</h2>
+                    <form id="loginFormElement" onsubmit="login(event)">
+                        <div class="form-group">
+                            <label for="loginUsername">Имя пользователя:</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Пароль:</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Войти
+                        </button>
+                        <button type="button" onclick="hideAuth()" class="btn btn-secondary">
+                            Отмена
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-form" id="registerForm" style="display: none;">
+                    <h2><i class="fas fa-user-plus"></i> Регистрация</h2>
+                    <form id="registerFormElement" onsubmit="register(event)">
+                        <div class="form-group">
+                            <label for="regUsername">Имя пользователя:</label>
+                            <input type="text" id="regUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regEmail">Email:</label>
+                            <input type="email" id="regEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword">Пароль:</label>
+                            <input type="password" id="regPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regConfirmPassword">Подтвердите пароль:</label>
+                            <input type="password" id="regConfirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Зарегистрироваться
+                        </button>
+                        <button type="button" onclick="hideAuth()" class="btn btn-secondary">
+                            Отмена
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Основной контент -->
+            <div id="mainContent" style="display: none;">
+                <div class="dashboard">
+                    <!-- Статистика -->
+                    <div class="stats-section">
+                        <h2><i class="fas fa-chart-line"></i> Статистика</h2>
+                        <div class="stats-filters">
+                            <select id="periodSelect" onchange="loadStats()">
+                                <option value="week">За неделю</option>
+                                <option value="month" selected>За месяц</option>
+                                <option value="year">За год</option>
+                                <option value="all">За всё время</option>
+                            </select>
+                        </div>
+                        <div class="stats-grid" id="statsGrid">
+                            <!-- Статистика будет загружена здесь -->
+                        </div>
+                    </div>
+
+                    <!-- Добавление тренировки -->
+                    <div class="add-workout-section">
+                        <h2><i class="fas fa-plus-circle"></i> Добавить тренировку</h2>
+                        <form id="addWorkoutForm" onsubmit="addWorkout(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="workoutDate">Дата:</label>
+                                    <input type="date" id="workoutDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="workoutType">Тип тренировки:</label>
+                                    <select id="workoutType" required>
+                                        <option value="">Выберите тип</option>
+                                        <option value="Бег">Бег</option>
+                                        <option value="Ходьба">Ходьба</option>
+                                        <option value="Велосипед">Велосипед</option>
+                                        <option value="Плавание">Плавание</option>
+                                        <option value="Силовая">Силовая</option>
+                                        <option value="Йога">Йога</option>
+                                        <option value="Кардио">Кардио</option>
+                                        <option value="Другое">Другое</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="duration">Продолжительность (мин):</label>
+                                    <input type="number" id="duration" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="calories">Калории:</label>
+                                    <input type="number" id="calories" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="distance">Дистанция (км):</label>
+                                    <input type="number" id="distance" min="0" step="0.1">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notes">Заметки:</label>
+                                <textarea id="notes" rows="3"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Сохранить тренировку
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Список тренировок -->
+                <div class="workouts-section">
+                    <h2><i class="fas fa-history"></i> История тренировок</h2>
+                    <div class="workouts-filters">
+                        <input type="text" id="searchWorkouts" placeholder="Поиск по заметкам..."
+                               oninput="filterWorkouts()">
+                        <select id="filterType" onchange="filterWorkouts()">
+                            <option value="">Все типы</option>
+                            <option value="Бег">Бег</option>
+                            <option value="Ходьба">Ходьба</option>
+                            <option value="Велосипед">Велосипед</option>
+                            <option value="Плавание">Плавание</option>
+                            <option value="Силовая">Силовая</option>
+                            <option value="Йога">Йога</option>
+                            <option value="Кардио">Кардио</option>
+                        </select>
+                        <input type="date" id="filterDateFrom" onchange="filterWorkouts()">
+                        <input type="date" id="filterDateTo" onchange="filterWorkouts()">
+                    </div>
+                    <div class="workouts-list" id="workoutsList">
+                        <!-- Список тренировок будет загружен здесь -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Модальное окно для редактирования -->
+        <div id="editModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2><i class="fas fa-edit"></i> Редактировать тренировку</h2>
+                <form id="editWorkoutForm" onsubmit="updateWorkout(event)">
+                    <input type="hidden" id="editWorkoutId">
+                    <div class="form-group">
+                        <label for="editWorkoutDate">Дата:</label>
+                        <input type="date" id="editWorkoutDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editWorkoutType">Тип тренировки:</label>
+                        <select id="editWorkoutType" required>
+                            <option value="Бег">Бег</option>
+                            <option value="Ходьба">Ходьба</option>
+                            <option value="Велосипед">Велосипед</option>
+                            <option value="Плавание">Плавание</option>
+                            <option value="Силовая">Силовая</option>
+                            <option value="Йога">Йога</option>
+                            <option value="Кардио">Кардио</option>
+                            <option value="Другое">Другое</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDuration">Продолжительность (мин):</label>
+                        <input type="number" id="editDuration" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCalories">Калории:</label>
+                        <input type="number" id="editCalories" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDistance">Дистанция (км):</label>
+                        <input type="number" id="editDistance" min="0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editNotes">Заметки:</label>
+                        <textarea id="editNotes" rows="3"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" onclick="closeEditModal()" class="btn btn-secondary">
+                            Отмена
+                        </button>
+                        <button type="button" onclick="deleteWorkout()" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
